@@ -45,6 +45,9 @@
  
  */
 
+/*
+ 동영상을 녹화하는 동시에 photo 버튼을 누르면 해당 프레임을 사진으로 앨범에 저장한다
+ */
 #import <UIKit/UIKit.h>
 
 @class AVCamCaptureManager, AVCamPreviewView, AVCaptureVideoPreviewLayer;

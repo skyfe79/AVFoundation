@@ -187,11 +187,16 @@
 	}
 	
     // Init the device inputs
+    // CaptureDeviceInput은 CaptureInput의 구체클래스이고 CaptureInput은 캡쳐세션의 입력 데이터 소스를 기술한 추상 베이스 클래스이다.
+    // 캡쳐세션의 입력 데이터 소스를 후면 카메라 및 마이크 캡쳐디바이스로 설정한다.
     AVCaptureDeviceInput *newVideoInput = [[AVCaptureDeviceInput alloc] initWithDevice:[self backFacingCamera] error:nil];
     AVCaptureDeviceInput *newAudioInput = [[AVCaptureDeviceInput alloc] initWithDevice:[self audioDevice] error:nil];
     
 	
     // Setup the still image file output
+    // CaputureOutput은 캡쳐세션의 출력 목적지를 기술한 추상 베이스 클래스이다.
+    // CaputureStillImageOutput은 CaptureOutput의 구체클래스이다.
+    // 캡쳐세션의 출력목적지로 스틸이미지를 설정한다.
     AVCaptureStillImageOutput *newStillImageOutput = [[AVCaptureStillImageOutput alloc] init];
     NSDictionary *outputSettings = [[NSDictionary alloc] initWithObjectsAndKeys:
                                     AVVideoCodecJPEG, AVVideoCodecKey,
@@ -226,6 +231,7 @@
     [newCaptureSession release];
     
 	// Set up the movie file output
+    // 스틸이미지 출력 외에 동영상 파일 출력을 캡쳐 세션의 출력으로 설정한다.
     NSURL *outputFileURL = [self tempFileURL];
     AVCamRecorder *newRecorder = [[AVCamRecorder alloc] initWithSession:[self session] outputFileURL:outputFileURL];
     [newRecorder setDelegate:self];
@@ -273,10 +279,13 @@
 
 - (void) captureStillImage
 {
+    //: CaptureConnection은 한 캡쳐 세션과 연관되어 있는 캡쳐 입력과 캡쳐 출력의 연결을 표현한 객체이다.
+    //: 스틸이미지 출력과 비디오 입력이 서로 연결되어 있다면 해당 커넥션을 받아 온다.
     AVCaptureConnection *stillImageConnection = [AVCamUtilities connectionWithMediaType:AVMediaTypeVideo fromConnections:[[self stillImageOutput] connections]];
     if ([stillImageConnection isVideoOrientationSupported])
         [stillImageConnection setVideoOrientation:orientation];
     
+    //: 비디오입력과 스틸이미지출력 커넥션에서 스틸이미지를 비동기로 캡쳐한다.
     [[self stillImageOutput] captureStillImageAsynchronouslyFromConnection:stillImageConnection
                                                          completionHandler:^(CMSampleBufferRef imageDataSampleBuffer, NSError *error) {
 															 
@@ -310,6 +319,7 @@
 }
 
 // Toggle between the front and back camera, if both are present.
+// 캡쳐 입력 장치인 카메라를 토글해서 새로 설정한다.
 - (BOOL) toggleCamera
 {
     BOOL success = NO;
@@ -327,6 +337,7 @@
             goto bail;
         
         if (newVideoInput != nil) {
+            //: 현재 캡쳐세션을 얻어와서 기존 입력을 제거하고 새로운 입력을 추가한다.
             [[self session] beginConfiguration];
             [[self session] removeInput:[self videoInput]];
             if ([[self session] canAddInput:newVideoInput]) {
@@ -426,6 +437,8 @@ bail:
 }
 
 // Find a camera with the specificed AVCaptureDevicePosition, returning nil if one is not found
+// 캡쳐디바이스는 물리적인 디바이스를 표현한다.
+// 위치(전면, 후면)에 따른 카메라를 찾아서 있으면 반환한다.
 - (AVCaptureDevice *) cameraWithPosition:(AVCaptureDevicePosition) position
 {
     NSArray *devices = [AVCaptureDevice devicesWithMediaType:AVMediaTypeVideo];
@@ -438,18 +451,21 @@ bail:
 }
 
 // Find a front facing camera, returning nil if one is not found
+// 전면 카메라를 찾아서 있으면 반환한다.
 - (AVCaptureDevice *) frontFacingCamera
 {
     return [self cameraWithPosition:AVCaptureDevicePositionFront];
 }
 
 // Find a back facing camera, returning nil if one is not found
+// 후면 카메라를 찾아서 있으면 반환한다.
 - (AVCaptureDevice *) backFacingCamera
 {
     return [self cameraWithPosition:AVCaptureDevicePositionBack];
 }
 
 // Find and return an audio device, returning nil if one is not found
+// 오디오장치를 찾아서 있으면 반환한다.
 - (AVCaptureDevice *) audioDevice
 {
     NSArray *devices = [AVCaptureDevice devicesWithMediaType:AVMediaTypeAudio];

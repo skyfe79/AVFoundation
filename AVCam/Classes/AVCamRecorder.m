@@ -64,6 +64,11 @@
 {
     self = [super init];
     if (self != nil) {
+        
+        //: AVCaptureMovieFileOutput은 AVCaptureFileOutput의 구체클래스이다.
+        //: AVCaptureFileOutput은 AVCaptureOutput 추상클래스의 서브 추상클래스로 파일 출력 목적지를 기술한다.
+        //: AVCaptureMovieFileOutput은 캡쳐세션의 입력을 QuickTime 무비 파일로 출력한다.
+        //: AVCaptureMovieFileOutput 외에 AVCaptureAudioFileOutput이 있다.
         AVCaptureMovieFileOutput *aMovieFileOutput = [[AVCaptureMovieFileOutput alloc] init];
         if ([aSession canAddOutput:aMovieFileOutput])
             [aSession addOutput:aMovieFileOutput];

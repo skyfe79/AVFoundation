@@ -61,10 +61,13 @@ Copyright (C) 2011 Apple Inc. All Rights Reserved.
 
 @interface MyStreamingMovieViewController : UIViewController <UITextFieldDelegate> {
 
+    //: 플레이를 위해서 필요한 필수 4가지 요소
+    //--
     NSURL *movieURL;
 	AVPlayer *player;
     AVPlayerItem *playerItem;
 	MyPlayerLayerView *playerLayerView;
+    //--
     
     UITextField	*movieURLTextField;
     

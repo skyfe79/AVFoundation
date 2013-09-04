@@ -710,6 +710,7 @@ NSString *kTimedMetadataKey	= @"currentItem.timedMetadata";
     }
 	
     /* Create a new instance of AVPlayerItem from the now successfully loaded AVAsset. */
+    //- An AVPlayerItem represents the presentation state of an asset that’s played by an AVPlayer object, and lets you observe that state.
     self.playerItem = [AVPlayerItem playerItemWithAsset:asset];
     
     /* Observe the player item "status" key to determine when it is ready to play. */

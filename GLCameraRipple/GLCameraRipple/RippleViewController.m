@@ -312,6 +312,10 @@ didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer
     [_session addInput:input];
     
     //-- Create the output for the capture session.
+    //-- AVCaptureVideoDataOutput는 AVCaptureOutput의 구체 서브 클래스로 압축이 되지 않은 프레임을 처리하거나 압축된 프레임에 접근하기 위해서 사용한다.
+    //-- 따라서 비디오 영상 데이터를 OpenGL의 텍스춰로 사용하기 위해서 AVCaptureVideoDataOutput을 사용한다.
+    //-- 프레임을 OpenGL 텍스춰로 사용하는 부분은 - (void)captureOutput:(AVCaptureOutput *)captureOutput didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer fromConnection:(AVCaptureConnection *)connection
+    //-- SampleBufferDelegate의 델리게이션 메서드에서 이뤄진다.
     AVCaptureVideoDataOutput * dataOutput = [[AVCaptureVideoDataOutput alloc] init];
     [dataOutput setAlwaysDiscardsLateVideoFrames:YES]; // Probably want to set this to NO when recording
     
@@ -325,6 +329,8 @@ didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer
     [_session addOutput:dataOutput];
     [_session commitConfiguration];
     
+    
+    //-- 입력에서 출력으로 데이터의 흐름을 실행한다.
     [_session startRunning];
 }
 
